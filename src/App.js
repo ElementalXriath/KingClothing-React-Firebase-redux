@@ -1,21 +1,19 @@
 import React from 'react';
 import HomePage from './frames/home/homeFrame.compoenent';
 import './App.css';
-import { Route, Switch } from 'react-router';
+import { Route, Switch, Redirect } from 'react-router';
 import ShopFrame from './frames/shop/shopFrame.component';
 import Header from './components/header/header.component.js';
 import SignInAndSignUp from './frames/sing-in-up/sing-in-up.component';
-
 import {auth} from './firebase/firebase.utils';
 import { createUserProfileDocument } from './firebase/firebase.utils';
 import { connect } from 'react-redux';
-import {setCurrentUser} from './redux/user/user.actions'
+import { setCurrentUser } from './redux/user/user.actions'
 import { getDoc } from '@firebase/firestore';
 
 
 class App extends React.Component {
-
-
+  
   unsubscribeFromAuth = null;
 
   componentDidMount() {
@@ -31,15 +29,14 @@ class App extends React.Component {
             ...snap
           });  
         }
-
-      setCurrentUser(userAuth);
+      setCurrentUser(userAuth); 
     });
   }
 
   componentWillUnmount() {
     this.unsubscribeFromAuth();
   }
-
+  
   render(){
   return (
     <div className="App">
@@ -47,14 +44,22 @@ class App extends React.Component {
         <Switch> 
           <Route exact path='/' component={HomePage} />
           <Route path='/shop' component={ShopFrame}/>
-          <Route path ='/signin' component={SignInAndSignUp}/>
+          <Route exact path ='/signin' render={() => this.props.currentUser ? (<Redirect to='/'/>): <SignInAndSignUp/>}/>
         </Switch>
     </div>
   );}
 }
 
-const mapDispatchtoProps = dispatch => ({
-      setCurrentUser: user => dispatch(setCurrentUser(user))
-})
+const mapStateToProps = ({ user }) => ({
+  currentUser: user.currentUser
+});
 
-export default connect(null, mapDispatchtoProps)(App);
+const mapDispatchToProps = dispatch => ({
+  setCurrentUser: user => dispatch(setCurrentUser(user))
+});
+
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);

@@ -1,3 +1,4 @@
+
 import { initializeApp } from 'firebase/app';
 import { getFirestore, getDoc , doc, setDoc } from 'firebase/firestore';
 import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
@@ -12,8 +13,10 @@ const config = {
   };
 
   const app = initializeApp(config);
+
   export const auth = getAuth(app);
   export const firestore = getFirestore(app);
+
 
   export const createUserProfileDocument = async (userAuth, additionalData) => {
     if (!userAuth) return;
@@ -38,8 +41,6 @@ const config = {
     }
     return userRef;
   };
-
- 
 
     const provider = new GoogleAuthProvider();
 
